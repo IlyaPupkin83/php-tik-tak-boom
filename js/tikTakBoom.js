@@ -1,113 +1,141 @@
 tikTakBoom = {
-    init(
-        tasks,
-        timerField,
-        gameStatusField,
-        textFieldQuestion,
-        textFieldAnswer1,
-        textFieldAnswer2
-    ) {
-        this.boomTimer = 30;
-        this.countOfPlayers = 2;
-        this.tasks = JSON.parse(tasks);
+	init(
+		tasks,
+		timerField,
+		gameStatusField,
+		textFieldQuestion,
+		textFieldAnswer1,
+		textFieldAnswer2
+	) {
+		this.boomTimer = 30;
+		this.preTime = 4;
+		this.stop = 1;
+		this.countOfPlayers = 2;
+		this.tasks = JSON.parse(tasks);
 
-        this.timerField = timerField;
-        this.gameStatusField = gameStatusField;
-        this.textFieldQuestion = textFieldQuestion;
-        this.textFieldAnswer1 = textFieldAnswer1;
-        this.textFieldAnswer2 = textFieldAnswer2;
+		this.timerField = timerField;
+		this.gameStatusField = gameStatusField;
+		this.textFieldQuestion = textFieldQuestion;
+		this.textFieldAnswer1 = textFieldAnswer1;
+		this.textFieldAnswer2 = textFieldAnswer2;
 
-        this.needRightAnswers = 3;
-    },
+		this.needRightAnswers = 3;
+	},
 
-    run() {
-        this.state = 1;
+	prerun() {
+		this.gameStatusField.innerText = `Приготовьтесь...`;
+		this.pretimer();
 
-        this.rightAnswers = 0;
+	},
 
-        this.turnOn();
+	run() {
+		this.state = 1;
 
-        this.timer();
-    },
+		this.rightAnswers = 0;
 
-    turnOn() {
-        this.gameStatusField.innerText += ` Вопрос игроку №${this.state}`;
+		this.turnOn();
 
-        const taskNumber = randomIntNumber(this.tasks.length - 1);
-        this.printQuestion(this.tasks[taskNumber]);
+		this.timer();
+	},
 
-        this.tasks.splice(taskNumber, 1);
+	turnOn() {
+		this.gameStatusField.innerText += ` Вопрос игроку №${this.state}`;
 
-        this.state = (this.state === this.countOfPlayers) ? 1 : this.state + 1;
-    },
+		const taskNumber = randomIntNumber(this.tasks.length - 1);
+		this.printQuestion(this.tasks[taskNumber]);
 
-    turnOff(value) {
-        if (this.currentTask[value].result) {
-            this.gameStatusField.innerText = 'Верно!';
-            this.rightAnswers += 1;
-        } else {
-            this.gameStatusField.innerText = 'Неверно!';
-        }
-        if (this.rightAnswers < this.needRightAnswers) {
-            if (this.tasks.length === 0) {
-                this.finish('lose');
-            } else {
-                this.turnOn();
-            }
-        } else {
-            this.finish('won');
-        }
+		this.tasks.splice(taskNumber, 1);
 
-        this.textFieldAnswer1.removeEventListener('click', answer1);
-        this.textFieldAnswer2.removeEventListener('click', answer2);
-    },
+		this.state = (this.state === this.countOfPlayers) ? 1 : this.state + 1;
+	},
 
-    printQuestion(task) {
-        this.textFieldQuestion.innerText = task.question;
-        this.textFieldAnswer1.innerText = task.answer1.value;
-        this.textFieldAnswer2.innerText = task.answer2.value;
+	turnOff(value) {
+		if (this.currentTask[value].result) {
+			this.gameStatusField.innerText = 'Верно!';
+			this.rightAnswers += 1;
+		} else {
+			this.gameStatusField.innerText = 'Неверно!';
+		}
+		if (this.rightAnswers < this.needRightAnswers) {
+			if (this.tasks.length === 0) {
+				this.finish('lose');
+			} else {
+				this.turnOn();
+			}
+		} else {
+			this.finish('won');
+		}
 
-        this.textFieldAnswer1.addEventListener('click', answer1 = () => this.turnOff('answer1'));
-        this.textFieldAnswer2.addEventListener('click', answer2 = () => this.turnOff('answer2'));
+		this.textFieldAnswer1.removeEventListener('click', answer1);
+		this.textFieldAnswer2.removeEventListener('click', answer2);
+	},
 
-        this.currentTask = task;
-    },
+	printQuestion(task) {
+		this.textFieldQuestion.innerText = task.question;
+		this.textFieldAnswer1.innerText = task.answer1.value;
+		this.textFieldAnswer2.innerText = task.answer2.value;
 
-    finish(result = 'lose') {
-        this.state = 0;
-        if (result === 'lose') {
-            this.gameStatusField.innerText = `Вы проиграли!`;
-        }
-        if (result === 'won') {
-            this.gameStatusField.innerText = `Вы выиграли!`;
-        }
+		this.textFieldAnswer1.addEventListener('click', answer1 = () => this.turnOff('answer1'));
+		this.textFieldAnswer2.addEventListener('click', answer2 = () => this.turnOff('answer2'));
 
-        this.textFieldQuestion.innerText = ``;
-        this.textFieldAnswer1.innerText = ``;
-        this.textFieldAnswer2.innerText = ``;
+		this.currentTask = task;
+	},
 
-        console.log(this);
-    },
+	finish(result = 'lose') {
+		this.state = 0;
+		if (result === 'lose') {
+			this.gameStatusField.innerText = `Вы проиграли!`;
+		}
+		if (result === 'won') {
+			this.gameStatusField.innerText = `Вы выиграли!`;
+		}
 
-    timer() {
-        if (this.state) {
-            this.boomTimer -= 1;
-            let sec = this.boomTimer % 60;
-            let min = (this.boomTimer - sec) / 60;
-            sec = (sec >= 10) ? sec : '0' + sec;
-            min = (min >= 10) ? min : '0' + min;
-            this.timerField.innerText = `${min}:${sec}`;
+		this.textFieldQuestion.innerText = ``;
+		this.textFieldAnswer1.innerText = ``;
+		this.textFieldAnswer2.innerText = ``;
 
-            if (this.boomTimer > 0) {
-                setTimeout(
-                    () => {
-                        this.timer()
-                    },
-                    1000,
-                )
-            } else {
-                this.finish('lose');
-            }
-        }
-    },
+		console.log(this);
+	},
+
+	timer() {
+		debugger;
+		if ((this.state) && (stop == 0)) {
+			debugger;
+			this.boomTimer -= 1;
+			let sec = this.boomTimer % 60;
+			let min = (this.boomTimer - sec) / 60;
+			sec = (sec >= 10) ? sec : '0' + sec;
+			min = (min >= 10) ? min : '0' + min;
+			this.timerField.innerText = `${min}:${sec}`;
+
+			if (this.boomTimer > 0) {
+				setTimeout(
+					() => {
+						this.timer()
+					},
+					1000,
+				)
+			} else {
+				this.finish('lose');
+			}
+		}
+	},
+
+	pretimer() {
+		this.preTime -= 1;
+		let sec = this.preTime % 60;
+		this.timerField.innerText = `${sec}`;
+
+		if (this.preTime > 0) {
+			setTimeout(
+				() => {
+					this.pretimer()
+				},
+				1000,
+			)
+		} else {
+			this.gameStatusField.innerText = `Начали!`;
+			stop = 0;
+		}
+	},
 }
