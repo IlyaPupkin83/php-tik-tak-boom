@@ -7,7 +7,7 @@ tikTakBoom = {
 		textFieldAnswer1,
 		textFieldAnswer2
 	) {
-		this.boomTimer = 30;
+		this.boomTimer = 34;
 		this.preTime = 4;
 		this.stop = 1;
 		this.countOfPlayers = 2;
@@ -23,6 +23,7 @@ tikTakBoom = {
 	},
 
 	prerun() {
+		this.gameStatusField.innerText = ``;
 		this.gameStatusField.innerText = `Приготовьтесь...`;
 		this.pretimer();
 
@@ -33,9 +34,9 @@ tikTakBoom = {
 
 		this.rightAnswers = 0;
 
-		this.turnOn();
-
 		this.timer();
+
+		this.turnOn();
 	},
 
 	turnOn() {
@@ -98,9 +99,9 @@ tikTakBoom = {
 	},
 
 	timer() {
-		debugger;
-		if ((this.state) && (stop == 0)) {
-			debugger;
+		if ((this.state) && (this.boomTimer > 30)) {
+			this.pretimer();
+		} else {
 			this.boomTimer -= 1;
 			let sec = this.boomTimer % 60;
 			let min = (this.boomTimer - sec) / 60;
@@ -114,14 +115,15 @@ tikTakBoom = {
 						this.timer()
 					},
 					1000,
-				)
-			} else {
+				);
 				this.finish('lose');
 			}
 		}
 	},
 
 	pretimer() {
+		this.gameStatusField.innerText = ``;
+		this.gameStatusField.innerText = `Приготовьтесь...`;
 		this.preTime -= 1;
 		let sec = this.preTime % 60;
 		this.timerField.innerText = `${sec}`;

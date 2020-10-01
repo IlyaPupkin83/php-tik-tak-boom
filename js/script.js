@@ -4,7 +4,7 @@ window.onload = function () {
 		document.getElementById('timerField'),
 		document.getElementById('gameStatusField'),
 	)
-	tikTakBoom.prerun()
+	tikTakBoom.run();
 	tikTakBoom.init(
 		tasks,
 		document.getElementById('timerField'),
@@ -13,5 +13,4 @@ window.onload = function () {
 		document.getElementById('answer1'),
 		document.getElementById('answer2'),
 	)
-	tikTakBoom.run();
 }
