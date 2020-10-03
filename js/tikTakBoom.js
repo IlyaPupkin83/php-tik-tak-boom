@@ -7,7 +7,7 @@ tikTakBoom = {
 		textFieldAnswer1,
 		textFieldAnswer2
 	) {
-		this.boomTimer = 34;
+		this.boomTimer = 31;
 		this.preTime = 4;
 		this.stop = 1;
 		this.countOfPlayers = 2;
@@ -22,17 +22,13 @@ tikTakBoom = {
 		this.needRightAnswers = 3;
 	},
 
-	prerun() {
-		this.gameStatusField.innerText = ``;
-		this.gameStatusField.innerText = `Приготовьтесь...`;
-		this.pretimer();
-
-	},
-
 	run() {
+
 		this.state = 1;
 
 		this.rightAnswers = 0;
+
+		this.pretimer();
 
 		this.timer();
 
@@ -40,14 +36,16 @@ tikTakBoom = {
 	},
 
 	turnOn() {
-		this.gameStatusField.innerText += ` Вопрос игроку №${this.state}`;
+		if (this.stop == 0) {
+			this.gameStatusField.innerText += ` Вопрос игроку №${this.state}`;
 
-		const taskNumber = randomIntNumber(this.tasks.length - 1);
-		this.printQuestion(this.tasks[taskNumber]);
+			const taskNumber = randomIntNumber(this.tasks.length - 1);
+			this.printQuestion(this.tasks[taskNumber]);
 
-		this.tasks.splice(taskNumber, 1);
+			this.tasks.splice(taskNumber, 1);
 
-		this.state = (this.state === this.countOfPlayers) ? 1 : this.state + 1;
+			this.state = (this.state === this.countOfPlayers) ? 1 : this.state + 1;
+		}
 	},
 
 	turnOff(value) {
@@ -99,16 +97,13 @@ tikTakBoom = {
 	},
 
 	timer() {
-		if ((this.state) && (this.boomTimer > 30)) {
-			this.pretimer();
-		} else {
+		if ((this.state) && (this.stop == 0)) {
 			this.boomTimer -= 1;
 			let sec = this.boomTimer % 60;
 			let min = (this.boomTimer - sec) / 60;
 			sec = (sec >= 10) ? sec : '0' + sec;
 			min = (min >= 10) ? min : '0' + min;
 			this.timerField.innerText = `${min}:${sec}`;
-
 			if (this.boomTimer > 0) {
 				setTimeout(
 					() => {
@@ -116,14 +111,13 @@ tikTakBoom = {
 					},
 					1000,
 				);
+			} else {
 				this.finish('lose');
 			}
 		}
 	},
 
 	pretimer() {
-		this.gameStatusField.innerText = ``;
-		this.gameStatusField.innerText = `Приготовьтесь...`;
 		this.preTime -= 1;
 		let sec = this.preTime % 60;
 		this.timerField.innerText = `${sec}`;
@@ -137,7 +131,10 @@ tikTakBoom = {
 			)
 		} else {
 			this.gameStatusField.innerText = `Начали!`;
-			stop = 0;
+			this.timerField.innerText = `0`;
+			this.stop = 0;
+			this.turnOn();
+			this.timer();
 		}
 	},
 }
