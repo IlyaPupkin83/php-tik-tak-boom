@@ -1,12 +1,14 @@
 window.onload = function () {
 	tikTakBoom.init(
 		tasks,
+		document.getElementById('countOfPlayersField'),
 		document.getElementById('timerField'),
 		document.getElementById('gameStatusField'),
 	)
-	tikTakBoom.run();
+	tikTakBoom.enterCount();
 	tikTakBoom.init(
 		tasks,
+		document.getElementById('countOfPlayersField'),
 		document.getElementById('timerField'),
 		document.getElementById('gameStatusField'),
 		document.getElementById('questionField'),
