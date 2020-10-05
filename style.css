@@ -1,23 +1,37 @@
 body {
-    font-family: 'Share Tech Mono', monospace;
+	font-family: "Share Tech Mono", monospace;
 }
 
-.timer-output{
-    width: 200px;
-    background: #222;
-    color: darkred;
-    padding: 16px 8px;
-    font-size: 64px;
-    text-align: center;
-    line-height: 1;
-    user-select: none;
+.timer-output {
+	width: 200px;
+	background: #222;
+	color: darkred;
+	padding: 16px 8px;
+	font-size: 64px;
+	text-align: center;
+	line-height: 1;
+	user-select: none;
 }
 
-.timer-output-wrapper{
-    width: calc(100% - 24px);
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
-    margin: 12px;
+.timer-output-wrapper {
+	width: calc(100% - 24px);
+	display: flex;
+	flex-direction: row;
+	align-content: center;
+	justify-content: center;
+	margin: 12px;
+}
+
+.btn {
+	background: #54ba4e;
+	border: 1px solid #54ba4e;
+	color: #fff;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.btn:hover {
+	background: #49ac43;
+	border: 1px solid #49ac43;
+	color: #fff;
 }

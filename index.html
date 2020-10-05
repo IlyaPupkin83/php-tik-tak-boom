@@ -17,20 +17,29 @@
 				<div class="row">
 					<h1>Тик-так-бум</h1>
 				</div>
-				<div class="col col-md-5">
-					<div class="countOfPlayersField input">
-						Количество игроков:<input type="number" id="countOfPlayersField" class="form-control"
-							placeholder="Введите количество игроков" aria-describedby="button-addon2">
-						</input>
+				<div class="row">
+					<div class="col col-md-5">
+						<div class="countOfPlayersField input">
+							Количество игроков:<input type="number" id="countOfPlayersField" class="form-control"
+								placeholder="Введите количество игроков" aria-describedby="button-addon2">
+							</input>
+						</div>
+						<button class="btn btn-info" type="button" id="buttonStart" style="display:block">Старт!</button>
+						<button class="btn btn-info" type="button" id="buttonFinish" style="display:none">Конец игры!</button>
+					</div>
+					<div class=" col col-md-5">
+						<div class="rules">
+							<a class="btn rules float-right" href="/rules.html" target="_blank"> Правила игры</a>
+						</div>
 					</div>
 				</div>
 				<div class="row">
-					<span class="alert alert-primary" id="gameStatusField">Приготовьтесь...</span>
+					<span class="alert alert-primary" id="gameStatusField" style="display:none">Приготовьтесь...</span>
 				</div>
 				<div class="row">
 					<div class="col">
 						<div class="timer-output-wrapper">
-							<div class="timer-output" id="timerField">
+							<div class="timer-output" id="timerField" style="display:none">
 								00:00
 							</div>
 						</div>
@@ -40,10 +49,10 @@
 					<h3 id="questionField"></h3>
 				</div>
 				<div class="row">
-					<div id="answer1" class="btn btn-primary form-control text-left answer"></div>
+					<div id="answer1" class="btn btn-primary form-control text-left answer" style="display:none"></div>
 				</div>
 				<div class="row">
-					<div id="answer2" class="btn btn-danger form-control text-left answer"></div>
+					<div id="answer2" class="btn btn-danger form-control text-left answer" style="display:none"></div>
 				</div>
 			</div>
 		</div>
