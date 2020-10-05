@@ -12,7 +12,7 @@ tikTakBoom = {
 	) {
 		this.boomTimer = 31;
 		this.preTime = 4;
-		this.stop = 0;
+		this.stop = 1;
 		this.tasks = JSON.parse(tasks);
 
 		this.buttonStart = buttonStart;
@@ -39,8 +39,10 @@ tikTakBoom = {
 
 	startGame() {
 		this.buttonStart.addEventListener('click', function (e) {
-			this.countOfPlayers = parseInt(this.countOfPlayersField).value || 2;
+			tikTakBoom.countOfPlayers = parseInt(this.countOfPlayersField).value || 2;
 			tikTakBoom.showDom();
+			tikTakBoom.gameStatusField.innerText = ``;
+			tikTakBoom.gameStatusField.innerText = `Приготовьтесь...`;
 			tikTakBoom.run();
 			tikTakBoom.stopGame();
 		}
@@ -49,10 +51,11 @@ tikTakBoom = {
 
 	stopGame() {
 		this.buttonFinish.addEventListener('click', function (e) {
-			this.result = 'lose';
-			this.stop = 1;
-			this.boomTimer = 0;
-			this.preTime = 0;
+			tikTakBoom.result = 'lose';
+			tikTakBoom.stop = 0;
+			tikTakBoom.boomTimer = 0;
+			tikTakBoom.preTime = 0;
+			tikTakBoom.state = 0;
 			tikTakBoom.pretimer();
 			tikTakBoom.timer();
 			tikTakBoom.finish();
@@ -65,9 +68,9 @@ tikTakBoom = {
 	run() {
 		this.state = 1;
 		if (this.result === 'lose') {
-			debugger;
 			this.boomTimer = 31;
 			this.preTime = 4;
+			this.stop = 1;
 		};
 		this.rightAnswers = 0;
 		this.pretimer();
@@ -78,6 +81,7 @@ tikTakBoom = {
 	turnOn() {
 		if (this.stop == 0) {
 			this.gameStatusField.innerText = ``;
+			this.gameStatusField.innerText = `Игра идет...`;
 			this.gameStatusField.innerText += ` Вопрос игроку №${this.state}`;
 
 			const taskNumber = randomIntNumber(this.tasks.length - 1);
@@ -152,7 +156,6 @@ tikTakBoom = {
 					1000,
 				);
 			} else {
-				debugger;
 				this.finish('lose');
 				setTimeout(
 					() => clearTimeOut(timer2)
@@ -162,7 +165,7 @@ tikTakBoom = {
 	},
 
 	pretimer() {
-		if (this.stop == 0) {
+		if (this.stop == 1) {
 			this.preTime -= 1;
 			let sec = this.preTime % 60;
 			this.timerField.innerText = `${sec}`;
@@ -174,11 +177,9 @@ tikTakBoom = {
 					1000,
 				)
 			} else {
-				debugger;
 				setTimeout(
 					() => clearTimeout(timer1)
 				);
-				this.gameStatusField.innerText = `Игра идет...`;
 				this.timerField.innerText = `0`;
 				this.stop = 0;
 				this.preTime = 4;
