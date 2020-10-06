@@ -2,6 +2,11 @@ body {
 	font-family: "Share Tech Mono", monospace;
 }
 
+.game-card {
+	height: 100vh;
+	font-family: "Open Sans", monospace;
+}
+
 .timer-output {
 	width: 200px;
 	background: #222;
@@ -34,4 +39,54 @@ body {
 	background: #49ac43;
 	border: 1px solid #49ac43;
 	color: #fff;
+}
+
+.myaccordion {
+	width: 100%;
+	font-weight: bold;
+	color: #004987;
+}
+
+.myaccordion .card {
+	border: none;
+}
+
+.myaccordion .card-header {
+	border-bottom-color: #edeff0;
+	background: transparent;
+}
+
+.myaccordion .btn {
+	width: 100%;
+	font-weight: bold;
+	color: #004987;
+	padding: 0;
+}
+
+.myaccordion .btn-link:hover,
+.myaccordion .btn-link:focus {
+	text-decoration: none;
+	box-shadow: none;
+}
+
+.btn-group {
+	display: flex;
+	align-items: center;
+}
+
+.btn-success {
+	height: 50px;
+}
+
+.btn-group .fa {
+	font-size: 20px;
+}
+
+.card-footer .btn {
+	background-color: #004987;
+	color: white;
+}
+
+.card-footer {
+	background-color: white;
 }

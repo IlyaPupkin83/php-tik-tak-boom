@@ -4,6 +4,7 @@ window.onload = function () {
 		document.getElementById('buttonStart'),
 		document.getElementById('buttonFinish'),
 		document.getElementById('countOfPlayersField'),
+		document.getElementById('countOfTimeField'),
 		document.getElementById('timerField'),
 		document.getElementById('gameStatusField'),
 		document.getElementById('questionField'),

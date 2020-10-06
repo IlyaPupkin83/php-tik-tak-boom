@@ -4,13 +4,14 @@ tikTakBoom = {
 		buttonStart,
 		buttonFinish,
 		countOfPlayersField,
+		countOfTimeField,
 		timerField,
 		gameStatusField,
 		textFieldQuestion,
 		textFieldAnswer1,
 		textFieldAnswer2
 	) {
-		this.boomTimer = 31;
+
 		this.preTime = 4;
 		this.stop = 1;
 		this.tasks = JSON.parse(tasks);
@@ -18,6 +19,7 @@ tikTakBoom = {
 		this.buttonStart = buttonStart;
 		this.buttonFinish = buttonFinish;
 		this.countOfPlayersField = countOfPlayersField;
+		this.countOfTimeField = countOfTimeField;
 		this.timerField = timerField;
 		this.gameStatusField = gameStatusField;
 		this.textFieldQuestion = textFieldQuestion;
@@ -39,7 +41,8 @@ tikTakBoom = {
 
 	startGame() {
 		this.buttonStart.addEventListener('click', function (e) {
-			tikTakBoom.countOfPlayers = parseInt(this.countOfPlayersField).value || 2;
+			tikTakBoom.countOfPlayers = parseInt(tikTakBoom.countOfPlayersField.value) || 2;
+			tikTakBoom.boomTimer = (parseInt(tikTakBoom.countOfTimeField.value) + 1) || 31;
 			tikTakBoom.showDom();
 			tikTakBoom.gameStatusField.innerText = ``;
 			tikTakBoom.gameStatusField.innerText = `Приготовьтесь...`;
@@ -60,6 +63,7 @@ tikTakBoom = {
 			tikTakBoom.timer();
 			tikTakBoom.finish();
 			tikTakBoom.buttonStart.style.display = "block";
+			tikTakBoom.buttonStart.innerText = `Начать заново!`;
 			tikTakBoom.buttonFinish.style.display = "none";
 		}
 		)
@@ -68,7 +72,7 @@ tikTakBoom = {
 	run() {
 		this.state = 1;
 		if (this.result === 'lose') {
-			this.boomTimer = 31;
+			tikTakBoom.boomTimer = (parseInt(tikTakBoom.countOfTimeField.value) + 1) || 31;
 			this.preTime = 4;
 			this.stop = 1;
 		};
