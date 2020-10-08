@@ -20,6 +20,8 @@ tikTakBoom = {
 		this.preTime = 4;
 		this.stop = 1;
 		this.tasks = JSON.parse(tasks);
+		this.players = new Object();
+		;
 
 		this.buttonStart = buttonStart;
 		this.buttonFinish = buttonFinish;
@@ -37,6 +39,9 @@ tikTakBoom = {
 		this.textFieldAnswer6 = textFieldAnswer6;
 
 		this.needRightAnswers = 19;
+		this.maxWrongAnswers = 3;
+		this.playersWrongAnswer = 0;
+		this.playerNumber = 1;
 	},
 
 	showDom() {
@@ -44,13 +49,15 @@ tikTakBoom = {
 		this.buttonFinish.style.display = "block";
 		this.timerField.style.display = "block";
 		this.gameStatusField.style.display = "block";
-		this.textFieldQuestion.style.display = "block";
 	},
 
 	startGame() {
-		this.buttonStart.addEventListener('click', function (e) {
+		this.buttonStart.addEventListener('click', (event) => {
 			tikTakBoom.countOfPlayers = parseInt(tikTakBoom.countOfPlayersField.value) || 2;
 			tikTakBoom.boomTimer = (parseInt(tikTakBoom.countOfTimeField.value) + 1) || 31;
+
+			tikTakBoom.createPlayers();
+			console.log(tikTakBoom.players);
 			tikTakBoom.showDom();
 			tikTakBoom.gameStatusField.innerText = ``;
 			tikTakBoom.gameStatusField.innerText = `Приготовьтесь...`;
@@ -60,8 +67,16 @@ tikTakBoom = {
 		)
 	},
 
+	createPlayers() {
+		while (Object.keys(this.players).length < this.countOfPlayers) {
+			this.players[`${this.playerNumber}`] = `0`;
+			this.playerNumber += 1;
+		};
+		return this.players;
+	},
+
 	stopGame() {
-		this.buttonFinish.addEventListener('click', function (e) {
+		this.buttonFinish.addEventListener('click', (event) => {
 			tikTakBoom.result = 'lose';
 			tikTakBoom.stop = 0;
 			tikTakBoom.boomTimer = 0;
@@ -70,10 +85,6 @@ tikTakBoom = {
 			tikTakBoom.pretimer();
 			tikTakBoom.timer();
 			tikTakBoom.finish();
-			tikTakBoom.buttonStart.style.display = "block";
-			tikTakBoom.textFieldAnswer.style.display = "none";
-			tikTakBoom.buttonStart.innerText = `Начать заново!`;
-			tikTakBoom.buttonFinish.style.display = "none";
 		}
 		)
 	},
@@ -97,11 +108,8 @@ tikTakBoom = {
 
 			const taskNumber = randomIntNumber(this.tasks.length - 1);
 			this.printQuestion(this.tasks[taskNumber]);
-
 			this.tasks.splice(taskNumber, 1);
-			debugger;
 			this.state = (this.state === this.countOfPlayers) ? 1 : this.state + 1;
-			debugger;
 		}
 	},
 
@@ -113,6 +121,13 @@ tikTakBoom = {
 		} else {
 			this.gameStatusField.innerText = 'Неверно!';
 			this.boomTimer -= 5;
+			if (parseInt[this.players[this.state].value] <= this.maxWrongAnswers) {
+				this.playersWrongAnswer += 1;
+				this.players[`${this.state}`].value = `${this.playersWrongAnswer}`;
+			} else {
+				delete this.players[`${this.state}`];
+				console.log(this.players);
+			}
 		}
 		if (this.rightAnswers < this.needRightAnswers) {
 			if (this.tasks.length === 0) {
@@ -156,25 +171,42 @@ tikTakBoom = {
 			this.textFieldAnswer6.innerText = task.answer6.value;
 			this.textFieldAnswer6.style.display = "block";
 		};
-
-		this.textFieldAnswer1.addEventListener('click', answer1 = () => this.turnOff('answer1'));
-		this.textFieldAnswer2.addEventListener('click', answer2 = () => this.turnOff('answer2'));
-		this.textFieldAnswer3.addEventListener('click', answer3 = () => this.turnOff('answer3'));
-		this.textFieldAnswer4.addEventListener('click', answer4 = () => this.turnOff('answer4'));
-		this.textFieldAnswer5.addEventListener('click', answer5 = () => this.turnOff('answer5'));
-		this.textFieldAnswer6.addEventListener('click', answer6 = () => this.turnOff('answer6'));
+		this.textFieldAnswer1.addEventListener('click', (event) => {
+			event.stopImmediatePropagation();
+			this.turnOff('answer1');
+		});
+		this.textFieldAnswer2.addEventListener('click', (event) => {
+			event.stopImmediatePropagation();
+			this.turnOff('answer2');
+		});
+		this.textFieldAnswer3.addEventListener('click', (event) => {
+			event.stopImmediatePropagation();
+			this.turnOff('answer3');
+		});
+		this.textFieldAnswer4.addEventListener('click', (event) => {
+			event.stopImmediatePropagation();
+			this.turnOff('answer4');
+		});
+		this.textFieldAnswer5.addEventListener('click', (event) => {
+			event.stopImmediatePropagation();
+			this.turnOff('answer5');
+		});
+		this.textFieldAnswer6.addEventListener('click', (event) => {
+			event.stopImmediatePropagation();
+			this.turnOff('answer6');
+		});
 
 		this.currentTask = task;
 	},
 
 	finish(result = 'lose') {
+		this.buttonStart.style.display = "block";
+		this.textFieldAnswer.style.display = "none";
+		this.textFieldQuestion.style.display = "none";
+		this.buttonStart.innerText = `Начать заново!`;
+		this.buttonFinish.style.display = "none";
 		this.state = 0;
-		this.textFieldAnswer1.removeEventListener('click', answer1);
-		this.textFieldAnswer2.removeEventListener('click', answer2);
-		this.textFieldAnswer3.removeEventListener('click', answer3);
-		this.textFieldAnswer4.removeEventListener('click', answer4);
-		this.textFieldAnswer5.removeEventListener('click', answer5);
-		this.textFieldAnswer6.removeEventListener('click', answer6);
+
 		if (result === 'lose') {
 			this.gameStatusField.innerText = `Вы проиграли!`;
 		}
@@ -184,15 +216,15 @@ tikTakBoom = {
 	},
 
 	timer() {
-		this.textFieldAnswer.style.display = "block";
 		if ((this.state) && (this.stop == 0)) {
 			this.boomTimer -= 1;
-			let sec = this.boomTimer % 60;
-			let min = (this.boomTimer - sec) / 60;
-			sec = (sec >= 10) ? sec : '0' + sec;
-			min = (min >= 10) ? min : '0' + min;
-			this.timerField.innerText = `${min}:${sec}`;
+
 			if (this.boomTimer > 0) {
+				let sec = this.boomTimer % 60;
+				let min = (this.boomTimer - sec) / 60;
+				sec = (sec >= 10) ? sec : '0' + sec;
+				min = (min >= 10) ? min : '0' + min;
+				this.timerField.innerText = `${min}:${sec}`;
 				var timer2 = setTimeout(
 					() => {
 						this.timer()
@@ -200,7 +232,7 @@ tikTakBoom = {
 					1000,
 				);
 			} else {
-				debugger;
+				this.timerField.innerText = `00:00`;
 				this.finish('lose');
 				setTimeout(
 					() => clearTimeOut(timer2)
@@ -230,6 +262,8 @@ tikTakBoom = {
 				this.timerField.innerText = `0`;
 				this.stop = 0;
 				this.preTime = 4;
+				this.textFieldQuestion.style.display = "block";
+				this.textFieldAnswer.style.display = "block";
 				this.turnOn();
 				this.timer();
 			}

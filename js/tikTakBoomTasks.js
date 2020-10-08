@@ -119,7 +119,7 @@ const tasks = `
 	"answer1": { "result": false, "value": "alert()" },
 	"answer2": { "result": false, "value": "confirm()" },
 	"answer3": { "result": true, "value": "prompt()" },
-	"answer4": { "result": false, "value": "prompt()" }
+	"answer4": { "result": false, "value": "message()" }
 },
 {
 	"question": "Укажите имя функции округления вверх.",
