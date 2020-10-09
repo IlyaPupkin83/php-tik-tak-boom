@@ -20,8 +20,6 @@ tikTakBoom = {
 		this.preTime = 4;
 		this.stop = 1;
 		this.tasks = JSON.parse(tasks);
-		this.players = new Object();
-		;
 
 		this.buttonStart = buttonStart;
 		this.buttonFinish = buttonFinish;
@@ -38,7 +36,7 @@ tikTakBoom = {
 		this.textFieldAnswer5 = textFieldAnswer5;
 		this.textFieldAnswer6 = textFieldAnswer6;
 
-		this.needRightAnswers = 19;
+		this.needRightAnswers = 5;
 		this.maxWrongAnswers = 3;
 		this.playersWrongAnswer = 0;
 		this.playerNumber = 1;
@@ -56,6 +54,9 @@ tikTakBoom = {
 			tikTakBoom.countOfPlayers = parseInt(tikTakBoom.countOfPlayersField.value) || 2;
 			tikTakBoom.boomTimer = (parseInt(tikTakBoom.countOfTimeField.value) + 1) || 31;
 
+			tikTakBoom.stop = 1;
+			tikTakBoom.players = null;
+			tikTakBoom.players = [];
 			tikTakBoom.createPlayers();
 			console.log(tikTakBoom.players);
 			tikTakBoom.showDom();
@@ -68,20 +69,29 @@ tikTakBoom = {
 	},
 
 	createPlayers() {
-		while (Object.keys(this.players).length < this.countOfPlayers) {
-			this.players[`${this.playerNumber}`] = `0`;
+		this.playersWrongAnswer = 0;
+		this.playerNumber = 1;
+
+		while (this.players.length < this.countOfPlayers) {
+			this.index = this.playerNumber - 1;
+			this.players[this.index] = {};
+			this.players[this.index].playerNumber = `${this.playerNumber}`;
+			this.players[this.index].wrongAnswer = `${this.playersWrongAnswer}`;
 			this.playerNumber += 1;
 		};
-		return this.players;
 	},
 
 	stopGame() {
 		this.buttonFinish.addEventListener('click', (event) => {
+			debugger;
+			tikTakBoom.players = null;
+			tikTakBoom.players = [];
 			tikTakBoom.result = 'lose';
 			tikTakBoom.stop = 0;
 			tikTakBoom.boomTimer = 0;
 			tikTakBoom.preTime = 0;
 			tikTakBoom.state = 0;
+			tikTakBoom.playerNumber = 1;
 			tikTakBoom.pretimer();
 			tikTakBoom.timer();
 			tikTakBoom.finish();
@@ -91,7 +101,7 @@ tikTakBoom = {
 
 	run() {
 		this.state = 1;
-		if (this.result === 'lose') {
+		if (this.result) {
 			tikTakBoom.boomTimer = (parseInt(tikTakBoom.countOfTimeField.value) + 1) || 31;
 			this.preTime = 4;
 			this.stop = 1;
@@ -104,11 +114,13 @@ tikTakBoom = {
 
 	turnOn() {
 		if (this.stop == 0) {
-			this.gameStatusField.innerText += ` Вопрос игроку №${this.state}`;
+			debugger;
+			this.gameStatusField.innerText += ` Вопрос игроку №${this.players[`${this.state - 1}`].playerNumber}`;
 
 			const taskNumber = randomIntNumber(this.tasks.length - 1);
 			this.printQuestion(this.tasks[taskNumber]);
 			this.tasks.splice(taskNumber, 1);
+			this.stateLast = this.state;
 			this.state = (this.state === this.countOfPlayers) ? 1 : this.state + 1;
 		}
 	},
@@ -119,26 +131,82 @@ tikTakBoom = {
 			this.rightAnswers += 1;
 			this.boomTimer += 5;
 		} else {
+			debugger;
 			this.gameStatusField.innerText = 'Неверно!';
 			this.boomTimer -= 5;
-			if (parseInt[this.players[this.state].value] <= this.maxWrongAnswers) {
-				this.playersWrongAnswer += 1;
-				this.players[`${this.state}`].value = `${this.playersWrongAnswer}`;
-			} else {
-				delete this.players[`${this.state}`];
-				console.log(this.players);
+			this.playersWrongAnswer = parseInt(this.players[`${this.stateLast - 1}`].wrongAnswer);
+			this.playersWrongAnswer += 1;
+			this.players[`${this.stateLast - 1}`].wrongAnswer = `${this.playersWrongAnswer}`;
+			console.log(this.players);
+			if (this.playersWrongAnswer >= this.maxWrongAnswers) {
+				debugger;
+				this.gameStatusField.innerText += ` Игрок №${this.players[`${this.stateLast - 1}`].playerNumber} дал 3 неверных ответа и выбывает из игры!`;
+				this.players.splice(`${this.stateLast - 1}`, 1);
+				this.countOfPlayers -= 1;
+				if (this.countOfPlayers === 1) {
+					this.result = 'lose';
+					this.stop = 0;
+					this.boomTimer = 0;
+					this.preTime = 0;
+					this.state = 0;
+					this.playerNumber = 1;
+					this.players = null;
+					this.players = [];
+					this.pretimer();
+					this.timer();
+					this.finish();
+				} else {
+					this.state -= 1;
+					console.log(this.players);
+				};
 			}
 		}
 		if (this.rightAnswers < this.needRightAnswers) {
-			if (this.tasks.length === 0) {
+			if ((this.tasks.length === 0) || (this.countOfPlayers === 1)) {
 				this.finish('lose');
 			} else {
 				this.turnOn();
 			}
 		} else {
+			this.bubbleSort(this.players, this.comparationWrongAnswer);
+			console.log(this.players);
+			this.result = 'won';
+			this.stop = 0;
+			this.boomTimer = 0;
+			this.preTime = 0;
+			this.state = 0;
+			this.playerNumber = 1;
+			this.players = null;
+			this.players = [];
+			this.pretimer();
+			this.timer();
 			this.finish('won');
 		}
 	},
+
+	// функция сравнения двух элементов по цвету
+	comparationWrongAnswer(wrongAnswer1, wrongAnswer2) {
+		return (parseInt(wrongAnswer1) > parseInt(wrongAnswer2)) ? true : false;
+	},
+
+	//функция сортировки пузырьком
+	bubbleSort(players, comparationWrongAnswer) {
+		const n = players.length;
+		// внешняя итерация по элементам
+		for (let i = 0; i < n - 1; i++) {
+			// внутренняя итерация для перестановки элемента в конец массива
+			for (let j = 0; j < n - 1 - i; j++) {
+				// сравниваем элементы
+				if (comparationWrongAnswer(players[j].wrongAnswer, players[j + 1].wrongAnswer)) {
+					// делаем обмен элементов
+					let temp = players[j + 1];
+					players[j + 1] = players[j];
+					players[j] = temp;
+				}
+			}
+		}
+	},
+
 
 	printQuestion(task) {
 		this.textFieldQuestion.innerText = task.question;
@@ -205,10 +273,10 @@ tikTakBoom = {
 		this.textFieldQuestion.style.display = "none";
 		this.buttonStart.innerText = `Начать заново!`;
 		this.buttonFinish.style.display = "none";
-		this.state = 0;
 
 		if (result === 'lose') {
 			this.gameStatusField.innerText = `Вы проиграли!`;
+
 		}
 		if (result === 'won') {
 			this.gameStatusField.innerText = `Вы выиграли!`;
@@ -216,6 +284,7 @@ tikTakBoom = {
 	},
 
 	timer() {
+		debugger;
 		if ((this.state) && (this.stop == 0)) {
 			this.boomTimer -= 1;
 
@@ -233,7 +302,8 @@ tikTakBoom = {
 				);
 			} else {
 				this.timerField.innerText = `00:00`;
-				this.finish('lose');
+				this.state = 0;
+				this.finish();
 				setTimeout(
 					() => clearTimeOut(timer2)
 				);
